@@ -39,6 +39,6 @@ jobs:
         with:
           push: false
           tags: user/app:latest
-          context: /3.6/buster/slim/
+          context: ./3.6/buster/slim/
           platforms: linux/amd64,linux/arm64
 
