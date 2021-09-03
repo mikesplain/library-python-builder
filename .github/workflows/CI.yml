@@ -24,9 +24,10 @@ jobs:
         version: [3.10-rc, 3.6, 3.7, 3.8, 3.9]
         base: [alpine3.13, alpine3.14, bullseye, buster]
         include:
-          - version: 3.6
-            base: [bullseye, buster]
-            slim: [ true, false]
+          - base: bullseye
+            slim: true
+          - base: buster
+            slim: true
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
