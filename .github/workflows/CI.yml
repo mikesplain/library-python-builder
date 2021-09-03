@@ -23,6 +23,7 @@ jobs:
         # os: [macos-latest, windows-latest, ubuntu-18.04]
         version: [3.10-rc, 3.6, 3.7, 3.8, 3.9]
         base: [alpine3.13, alpine3.14, bullseye, buster]
+        slim: [false]
         include:
           - base: bullseye
             slim: true
