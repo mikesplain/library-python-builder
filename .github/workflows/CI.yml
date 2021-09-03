@@ -23,12 +23,10 @@ jobs:
         # os: [macos-latest, windows-latest, ubuntu-18.04]
         version: [3.10-rc, 3.6, 3.7, 3.8, 3.9]
         base: [alpine3.13, alpine3.14, bullseye, buster]
-        # include:
-          # includes a new variable of npm with a value of 6
-          # for the matrix leg matching the os and version
-          # - version: 3.6
-          #   base: bullseye
-          #   slim: []
+        include:
+          - version: 3.6
+            base: [bullseye, buster]
+            slim: [ true, false]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -74,11 +72,26 @@ jobs:
         name: Build and push ${{ matrix.version }}-${{ matrix.base }}-${{ matrix.platform }}
         id: docker_build
         uses: docker/build-push-action@v2
+        if: ${{ !matrix.slim}}
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           context: ./${{ matrix.version }}/${{ matrix.base }}/
+          platforms: linux/amd64, linux/arm64, linux/arm/v6, linux/386
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      -
+        name: Build and push ${{ matrix.version }}-${{ matrix.base }}-${{ matrix.platform }}
+        id: docker_build
+        uses: docker/build-push-action@v2
+        if: ${{ matrix.slim}}
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ./${{ matrix.version }}/${{ matrix.base }}/slim
           platforms: linux/amd64, linux/arm64, linux/arm/v6, linux/386
           cache-from: type=gha
           cache-to: type=gha,mode=max
