@@ -21,7 +21,6 @@ jobs:
     strategy:
       matrix:
         # os: [macos-latest, windows-latest, ubuntu-18.04]
-        platforms: [linux/amd64, linux/arm64, linux/arm/v6, linux/386]
         version: [3.10-rc, 3.6, 3.7, 3.8, 3.9]
         base: [alpine3.13, alpine3.14, bullseye, buster]
         # include:
@@ -58,10 +57,8 @@ jobs:
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=sha
+            type=raw,value=${{ matrix.version }}-${{ matrix.base }}
 
       -
         name: Login to GHCR
@@ -82,7 +79,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           context: ./${{ matrix.version }}/${{ matrix.base }}/
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64, linux/arm64, linux/arm/v6, linux/386
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
